@@ -24,6 +24,7 @@ namespace MaxOS::KPI {
         FILESYSTEM,
         PROCESS,
         THREAD,
+        INTERRUPT,
 
         _END,
     };

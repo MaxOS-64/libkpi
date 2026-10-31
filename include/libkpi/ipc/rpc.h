@@ -189,7 +189,6 @@ namespace MaxOS::KPI::ipc {
 	bool rpc_call(const char* server, const char* function, ArgList* args, ArgList* return_values, size_t flags = 0);
 	bool rpc_server_process_next(uint64_t endpoint, bool block);
 
-
 	[[noreturn]] void rpc_server_loop(const char* server);
 	[[noreturn]] void rpc_server_loop(uint64_t endpoint);
 	[[noreturn]] void rpc_server_loop(common::Vector<uint64_t> endpoints);
