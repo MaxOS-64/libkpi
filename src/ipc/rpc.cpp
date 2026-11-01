@@ -52,7 +52,8 @@ namespace MaxOS::KPI::ipc {
 		m_entries[m_entry_count].length = length;
 
 		// Copy the data into the payload
-		memcpy(&m_payload[m_payload_size], data, length);
+	    if (length)
+		    memcpy(&m_payload[m_payload_size], data, length);
 		m_payload_size += length;
 		m_entry_count++;
 
@@ -177,7 +178,16 @@ namespace MaxOS::KPI::ipc {
 
 	}
 
-	/**
+    void ArgList::push_bytes(MaxOS::common::ByteSpan bytes) {
+
+	    if (bytes.size && !bytes.data)
+	        return;
+
+	    add_arg(ArgType::BYTES, bytes.data, bytes.size);
+	}
+
+
+    /**
 	 * @brief Gets a boolean argument from the argument list
 	 *
 	 * @param index The index of the argument to get
@@ -287,7 +297,26 @@ namespace MaxOS::KPI::ipc {
 
 	}
 
-	/**
+    byte_span_t ArgList::get_bytes(size_t index) const {
+
+	    if (index >= m_entry_count)
+	        return {};
+
+	    const auto& entry = m_entries[index];
+
+	    if (entry.type != ArgType::BYTES)
+	        return {};
+
+	    if (entry.offset > m_payload_size || entry.length > m_payload_size - entry.offset)
+	        return {};
+
+	    return {
+	        .data = m_payload + entry.offset,
+            .size = entry.length
+        };
+	}
+
+    /**
 	 * @brief Reset the index of the last read arg
 	 */
 	void ArgList::reset_cursor() {

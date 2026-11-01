@@ -15,6 +15,7 @@
 #include <cstddef>
 
 #include <libcommon/string.h>
+#include <libcommon/byte_span.h>
 #include <libkpi/ipc/messages.h>
 #include <libkpi/processes/process.h>
 
@@ -71,6 +72,7 @@ namespace MaxOS::KPI::ipc {
 		INT64,
 		STRING,
 		BLOB,
+	    BYTES
 	};
 
 	/**
@@ -88,14 +90,14 @@ namespace MaxOS::KPI::ipc {
 
 
 	constexpr size_t MAX_ARGS = 16; 	///< The maximum number of arguments that can be passed to an RPC function
-	constexpr size_t MAX_PAYLOAD_SIZE = 1024; ///< The maximum size of the payload for RPC arguments
+	constexpr size_t MAX_PAYLOAD_SIZE = 2048; ///< The maximum size of the payload for RPC arguments
 	constexpr size_t MAX_SERIALIZED_SIZE = MAX_ARGS * sizeof(arg_entry_t) + MAX_PAYLOAD_SIZE; ///< The maximum size of the serialized ArgList
 
 	/**
 	 * @class ArgList
 	 * @brief Class to handle seralisation of args across an RPC shared message endpoint boundary
 	 *
-	 * @todo Allow for payloads larger than MAX_PAYLOAD_SIZE
+	 * @todo Allow for payloads larger than MAX_PAYLOAD_SIZE via page mapping
 	 */
 	class ArgList {
 
@@ -124,6 +126,7 @@ namespace MaxOS::KPI::ipc {
 			void push_int64(int64_t value);
 			void push_string(const string& value);
 			void push_blob(const void* data, size_t length);
+	        void push_bytes(common::byte_span_t bytes);
 
 			bool get_bool(size_t index) const;
 			uint32_t get_uint32(size_t index) const;
@@ -132,14 +135,16 @@ namespace MaxOS::KPI::ipc {
 			int64_t  get_int64(size_t index) const;
 			string get_string(size_t index) const;
 			const void* get_blob(size_t index) const;
+	        common::byte_span_t get_bytes(size_t index) const;
 
-			bool      get_bool()      { return get_bool(m_last_entry++); }
-			uint32_t  get_uint32()    { return get_uint32(m_last_entry++); }
-			uint64_t  get_uint64()    { return get_uint64(m_last_entry++); }
-			int32_t   get_int32()     { return get_int32(m_last_entry++); }
-			int64_t   get_int64()     { return get_int64(m_last_entry++); }
-			string    get_string()    { return get_string(m_last_entry++); }
-			const void* get_blob()    { return get_blob(m_last_entry++); }
+			bool      get_bool()                { return get_bool(m_last_entry++); }
+			uint32_t  get_uint32()              { return get_uint32(m_last_entry++); }
+			uint64_t  get_uint64()              { return get_uint64(m_last_entry++); }
+			int32_t   get_int32()               { return get_int32(m_last_entry++); }
+			int64_t   get_int64()               { return get_int64(m_last_entry++); }
+			string    get_string()              { return get_string(m_last_entry++); }
+			const void* get_blob()              { return get_blob(m_last_entry++); }
+			common::byte_span_t get_bytes()     { return get_bytes(m_last_entry++); }
 
 			void reset_cursor();
 			bool has_more() const;
