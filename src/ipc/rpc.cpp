@@ -297,7 +297,7 @@ namespace MaxOS::KPI::ipc {
 
 	}
 
-    byte_span_t ArgList::get_bytes(size_t index) const {
+    byte_span_t ArgList::get_bytes(size_t index) {
 
 	    if (index >= m_entry_count)
 	        return {};
@@ -487,7 +487,7 @@ namespace MaxOS::KPI::ipc {
 
 
 		// Set up a response endpoint if not already done
-		string response_end_name = "response_"s + string(pid());
+		string response_end_name = "response_"_s+ string(pid());
 		if (m_response_endpoint == 0)
 			m_response_endpoint = create_endpoint(response_end_name.c_str());
 
@@ -581,7 +581,7 @@ namespace MaxOS::KPI::ipc {
 	 * @note Will yield the thread when no messages are available.
 	 * @todo Implement loading from shared mem
 	 */
-	[[noreturn]] void rpc_server_loop(const char* server) {
+	void rpc_server_loop(const char* server) {
 
 		// Create the endpoint
 		uint64_t endpoint = create_endpoint(server);
@@ -599,7 +599,7 @@ namespace MaxOS::KPI::ipc {
 	 * @note Will yield the thread when no messages are available.
 	 * @todo Implement loading from shared mem
 	 */
-	[[noreturn]] void rpc_server_loop(uint64_t endpoint) {
+     void rpc_server_loop(uint64_t endpoint) {
 
 		// Validate the endpoint
 		if (endpoint == 0)
@@ -618,7 +618,7 @@ namespace MaxOS::KPI::ipc {
 	 * @note Will yield the thread when no messages are available.
 	 * @todo Implement loading from shared mem
 	 */
-	[[noreturn]] void rpc_server_loop(Vector<uint64_t> endpoints) {
+	void rpc_server_loop(Vector<uint64_t> endpoints) {
 
 		// Server loop
 		while (true) {

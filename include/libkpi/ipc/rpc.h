@@ -135,7 +135,7 @@ namespace MaxOS::KPI::ipc {
 			int64_t  get_int64(size_t index) const;
 			string get_string(size_t index) const;
 			const void* get_blob(size_t index) const;
-	        common::byte_span_t get_bytes(size_t index) const;
+	        common::byte_span_t get_bytes(size_t index);
 
 			bool      get_bool()                { return get_bool(m_last_entry++); }
 			uint32_t  get_uint32()              { return get_uint32(m_last_entry++); }
@@ -164,7 +164,6 @@ namespace MaxOS::KPI::ipc {
 	 *
 	 * @param args The arguments passed to the function
 	 * @param return_values The return values from the function
-	 * @param return_values_count The number of return values
 	 */
 	typedef void (* rpc_function_t)(ArgList* args, ArgList* return_values);
 
@@ -194,9 +193,9 @@ namespace MaxOS::KPI::ipc {
 	bool rpc_call(const char* server, const char* function, ArgList* args, ArgList* return_values, size_t flags = 0);
 	bool rpc_server_process_next(uint64_t endpoint, bool block);
 
-	[[noreturn]] void rpc_server_loop(const char* server);
-	[[noreturn]] void rpc_server_loop(uint64_t endpoint);
-	[[noreturn]] void rpc_server_loop(common::Vector<uint64_t> endpoints);
+	void rpc_server_loop(const char* server);
+	void rpc_server_loop(uint64_t endpoint);
+	void rpc_server_loop(common::Vector<uint64_t> endpoints);
 
 	void rpc_wait_for_server(const char* server);
 

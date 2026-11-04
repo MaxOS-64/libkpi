@@ -21,6 +21,8 @@ namespace MaxOS::KPI::hardware {
     /**
      * @class UserInterruptHandler
      * @brief Handles a certain interrupt number, in userspace
+     *
+     * @todo this needs to interrupt whatever the userspace program is running
      */
     class UserInterruptHandler {
         protected:
